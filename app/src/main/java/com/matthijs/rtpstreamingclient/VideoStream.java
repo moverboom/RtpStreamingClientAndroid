@@ -2,8 +2,6 @@ package com.matthijs.rtpstreamingclient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
@@ -20,9 +18,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.ImageView;
-
-import com.matthijs.rtpstreamingclient.util.FlushedInputStream;
 
 /**
  * Created by Matthijs Overboom on 23-5-16.
@@ -82,7 +77,6 @@ public class VideoStream {
             VideoFileName = "videocapture.mjpeg";
 
             //Establish a TCP connection with the server to exchange RTSP messages
-            //------------------
             RTSPsocket = new Socket(ServerIPAddr, RTSP_server_port);
 
             //Set input and output stream filters:
@@ -259,15 +253,7 @@ public class VideoStream {
             int payload_length = rtp_packet.getpayload_length();
             byte [] payload = new byte[payload_length];
             rtp_packet.getpayload(payload);
-
-//            ImageView imgView;
             bitmap = BitmapFactory.decodeByteArray(payload, 0, payload_length);
-
-//            ByteArrayInputStream inputStream = new ByteArrayInputStream(payload);
-//            bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
-
-            //bitmap.compress(Bitmap.CompressFormat.MJPEG, 0 /*ignored for PNG*/, blob);
-            //byte[] bitmapdata = blob.toByteArray();
         }
         catch (InterruptedIOException iioe){
             //System.out.println("Nothing to read");
