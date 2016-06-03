@@ -47,6 +47,12 @@ public class VideoListFragment extends ListFragment implements AdapterView.OnIte
         startActivity(videoViewIntent);
     }
 
+    /**
+     * Fills the list with videos
+     * Implement Async task here
+     *
+     * @throws Exception
+     */
     private void setVideoArrayList() throws Exception {
         videoArrayList.add(new Video(1, "video 1", InetAddress.getByName("127.0.0.1"), 1234));
         videoArrayList.add(new Video(2, "video 2", InetAddress.getByName("127.0.0.1"), 1234));
