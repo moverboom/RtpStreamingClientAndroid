@@ -2,6 +2,7 @@ package com.matthijs.rtpstreamingclient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,20 +18,16 @@ import java.util.TimerTask;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.rtp.RtpStream;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.matthijs.rtpstreamingclient.RTPpacket;
+import com.matthijs.rtpstreamingclient.util.FlushedInputStream;
 
 /**
- * Created by matthijs on 23-5-16.
+ * Created by Matthijs Overboom on 23-5-16.
  */
 public class VideoStream {
-    //RTP variables:
-    //----------------
     DatagramPacket rcvdp; //UDP packet received from the server
     DatagramSocket RTPsocket; //socket to be used to send and receive UDP packets
     static int RTP_RCV_PORT = 25000; //port where the client will receive the RTP packets
@@ -38,8 +35,6 @@ public class VideoStream {
     Timer timer; //timer used to receive data from the UDP socket
     byte[] buf; //buffer used to store data received from the server
 
-    //RTSP variables
-    //----------------
     //rtsp states
     final static int INIT = 0;
     final static int READY = 1;
@@ -55,15 +50,13 @@ public class VideoStream {
 
     final static String CRLF = "\r\n";
 
-    //Video constants:
-    //------------------
     static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
 
     private VideoScreen videoScreen;
     private Handler handler;
 
     public VideoStream() {
-        buf = new byte[15000];
+        buf = new byte[64000];
         handler = new Handler();
         new Thread() {
             public void run() {
@@ -72,7 +65,7 @@ public class VideoStream {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        videoScreen.enableSetupTeardownButtons();
+                        videoScreen.enableSetupButton();
                     }
                 });
             }
@@ -82,11 +75,11 @@ public class VideoStream {
     private void initialize() {
         try {
             //SETUP RTSP connection
-            InetAddress ServerIPAddr = InetAddress.getByName("192.168.178.16");
+            InetAddress ServerIPAddr = InetAddress.getByName("192.168.178.13");
             //RTSP port
-            int RTSP_server_port = 1234;
+            int RTSP_server_port = 5568;
             //get video filename to request:
-            VideoFileName = "movie.Mjpeg";
+            VideoFileName = "videocapture.mjpeg";
 
             //Establish a TCP connection with the server to exchange RTSP messages
             //------------------
@@ -267,9 +260,12 @@ public class VideoStream {
             byte [] payload = new byte[payload_length];
             rtp_packet.getpayload(payload);
 
-            ImageView imgView;
+//            ImageView imgView;
             bitmap = BitmapFactory.decodeByteArray(payload, 0, payload_length);
-            ByteArrayOutputStream blob = new ByteArrayOutputStream();
+
+//            ByteArrayInputStream inputStream = new ByteArrayInputStream(payload);
+//            bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
+
             //bitmap.compress(Bitmap.CompressFormat.MJPEG, 0 /*ignored for PNG*/, blob);
             //byte[] bitmapdata = blob.toByteArray();
         }
@@ -278,6 +274,7 @@ public class VideoStream {
         }
         catch (IOException ioe) {
             System.out.println("Exception caught: "+ioe);
+            ioe.printStackTrace();
         }
         return bitmap;
     }
@@ -288,7 +285,7 @@ public class VideoStream {
 
     public interface VideoScreen {
         void drawFrame(Bitmap bitmap);
-        void enableSetupTeardownButtons();
+        void enableSetupButton();
         void enablePlayButtonDisableSetup();
         void finishVideoActivity();
     }

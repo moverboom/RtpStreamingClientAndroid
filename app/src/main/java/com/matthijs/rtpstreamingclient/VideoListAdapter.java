@@ -6,12 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
- * Created by matthijs on 31-5-16.
+ * Created by Matthijs Overboom on 31-5-16.
  */
 public class VideoListAdapter extends BaseAdapter {
     private ArrayList<Video> videoArrayList;

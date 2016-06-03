@@ -1,7 +1,7 @@
 package com.matthijs.rtpstreamingclient;
 
 /**
- * Created by matthijs on 31-5-16.
+ * Created by Matthijs Overboom on 31-5-16.
  */
 public class RTPpacket{
 
@@ -27,38 +27,12 @@ public class RTPpacket{
     //Bitstream of the RTP payload
     public byte[] payload;
 
-
-
-    //--------------------------
-    //Constructor of an RTPpacket object from header fields and payload bitstream
-    //--------------------------
-    public RTPpacket(int PType, int Framenb, int Time, byte[] data, int data_length){
-        //fill by default header fields:
-        Version = 2;
-        Padding = 0;
-        Extension = 0;
-        CC = 0;
-        Marker = 0;
-        Ssrc = 0;
-
-        //fill changing header fields:
-        SequenceNumber = Framenb;
-        TimeStamp = Time;
-        PayloadType = PType;
-
-        //build the header bistream:
-        //--------------------------
-        header = new byte[HEADER_SIZE];
-        //fill the payload bitstream:
-        //--------------------------
-        payload_size = data_length;
-        payload = new byte[data_length];
-
-    }
-
-    //--------------------------
-    //Constructor of an RTPpacket object from the packet bistream
-    //--------------------------
+    /**
+     * Constructor
+     *
+     * @param packet byte[] received bytes from server
+     * @param packet_size content length
+     */
     public RTPpacket(byte[] packet, int packet_size)
     {
         //fill default fields:
@@ -90,75 +64,93 @@ public class RTPpacket{
         }
     }
 
-    //--------------------------
-    //getpayload: return the payload bistream of the RTPpacket and its size
-    //--------------------------
+    /**
+     * Returns the payload's size
+     * and sets the payload itself to the byte[] given as argument
+     *
+     * @param data byte[] to set the payload to
+     * @return payload size
+     */
     public int getpayload(byte[] data) {
 
-        for (int i=0; i < payload_size; i++)
+        for (int i = 0; i < payload_size; i++)
             data[i] = payload[i];
 
-        return(payload_size);
+        return (payload_size);
     }
 
-    //--------------------------
-    //getpayload_length: return the length of the payload
-    //--------------------------
+    /**
+     * Returns the payload length
+     *
+     * @return int payload length
+     */
     public int getpayload_length() {
-        return(payload_size);
+        return (payload_size);
     }
 
-    //--------------------------
-    //getlength: return the total length of the RTP packet
-    //--------------------------
+    /**
+     * Return the full length of the RTPpacket
+     * payload size + header size
+     *
+     * @return int full packet size
+     */
     public int getlength() {
-        return(payload_size + HEADER_SIZE);
+        return (payload_size + HEADER_SIZE);
     }
 
-    //--------------------------
-    //getpacket: returns the packet bitstream and its length
-    //--------------------------
-    public int getpacket(byte[] packet)
-    {
-        //construct the packet = header + payload
-        for (int i=0; i < HEADER_SIZE; i++)
+    /**
+     * Returns the packet size
+     * and sets the packet itself to the byte[] given as argument
+     *
+     * @param packet byte[] to set packet to
+     * @return int packet size
+     */
+    public int getpacket(byte[] packet) {
+        // construct the packet = header + payload
+        for (int i = 0; i < HEADER_SIZE; i++)
             packet[i] = header[i];
-        for (int i=0; i < payload_size; i++)
-            packet[i+HEADER_SIZE] = payload[i];
+        for (int i = 0; i < payload_size; i++)
+            packet[i + HEADER_SIZE] = payload[i];
 
-        //return total size of the packet
-        return(payload_size + HEADER_SIZE);
+        // return total size of the packet
+        return (payload_size + HEADER_SIZE);
     }
 
-    //--------------------------
-    //gettimestamp
-    //--------------------------
-
+    /**
+     * Returns the timestamp on which the packet was created
+     * at the server
+     *
+     * @return int timestamp
+     */
     public int gettimestamp() {
-        return(TimeStamp);
+        return (TimeStamp);
     }
 
-    //--------------------------
-    //getsequencenumber
-    //--------------------------
+    /**
+     * Returns the packet's sequence number
+     *
+     * @return int sequence number
+     */
     public int getsequencenumber() {
-        return(SequenceNumber);
+        return (SequenceNumber);
     }
 
-    //--------------------------
-    //getpayloadtype
-    //--------------------------
+    /**
+     * Returns the payload type
+     * (in this project we use type 26, jpeg.
+     *
+     * @return int payload type
+     */
     public int getpayloadtype() {
-        return(PayloadType);
+        return (PayloadType);
     }
 
+    /**
+     * Prints the header to the console without SSRC
+     * SSRC is not actively used in this project
+     */
+    public void printheader() {
 
-    //--------------------------
-    //print headers without the SSRC
-    //--------------------------
-    public void printheader()
-    {
-        //TO DO: uncomment
         for (int i = 0; i < (HEADER_SIZE - 4); i++) {
             for (int j = 7; j >= 0; j--)
                 if (((1 << j) & header[i]) != 0)
@@ -171,12 +163,12 @@ public class RTPpacket{
         System.out.println();
     }
 
-    //return the unsigned value of 8-bit integer nb
+    // return the unsigned value of 8-bit integer nb
     static int unsigned_int(int nb) {
         if (nb >= 0)
-            return(nb);
+            return (nb);
         else
-            return(256+nb);
+            return (256 + nb);
     }
 
 }
