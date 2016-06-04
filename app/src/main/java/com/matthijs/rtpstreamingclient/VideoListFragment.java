@@ -29,12 +29,25 @@ public class VideoListFragment extends ListFragment implements AdapterView.OnIte
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        videoListAdapter = new VideoListAdapter(getContext(), layoutInflater, videoArrayList);
+
         try {
+
+
+
+
+            //Call Async task here which fetches videos from REST API
+            //.notifyDataSetChanged on videoListAdapter in onPostExecute()
             setVideoArrayList();
+
+            videoListAdapter.notifyDataSetChanged();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        videoListAdapter = new VideoListAdapter(getContext(), layoutInflater, videoArrayList);
 
         setListAdapter(videoListAdapter);
         getListView().setOnItemClickListener(this);
@@ -49,7 +62,6 @@ public class VideoListFragment extends ListFragment implements AdapterView.OnIte
 
     /**
      * Fills the list with videos
-     * Implement Async task here
      *
      * @throws Exception
      */
