@@ -38,7 +38,8 @@ public class VideoActivity extends AppCompatActivity implements VideoStream.Vide
         buttonTear = (Button)findViewById(R.id.btnTear);
         frame = (ImageView)findViewById(R.id.frame);
 
-        videoStream = new VideoStream();
+        Video video = (Video)getIntent().getSerializableExtra("VIDEO");
+        videoStream = new VideoStream(video);
         videoStream.setVideoScreen(this);
 
         buttonSetup.setOnClickListener(new setupListener());
@@ -49,8 +50,8 @@ public class VideoActivity extends AppCompatActivity implements VideoStream.Vide
 
     @Override
     public void drawFrame(Bitmap bitmap) {
-        Log.d("RTP", "Drew frame");
         if(bitmap != null) {
+            Log.d("RTP", "Drew frame");
             frame.setImageBitmap(bitmap);
         }
     }

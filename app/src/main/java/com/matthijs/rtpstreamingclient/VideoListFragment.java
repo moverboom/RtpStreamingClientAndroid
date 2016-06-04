@@ -34,16 +34,10 @@ public class VideoListFragment extends ListFragment implements AdapterView.OnIte
 
         try {
 
-
-
-
             //Call Async task here which fetches videos from REST API
-            //.notifyDataSetChanged on videoListAdapter in onPostExecute()
-            setVideoArrayList();
-
-            videoListAdapter.notifyDataSetChanged();
-
-
+            // TODO: check even of alles zo naar wens is meune freund.
+            AsyncMovieLoaderTask asyncMovieLoaderTask = new AsyncMovieLoaderTask(videoListAdapter, videoArrayList);
+            asyncMovieLoaderTask.execute();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,20 +51,7 @@ public class VideoListFragment extends ListFragment implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Log.d("RTP", "Item clicked: " + i);
         Intent videoViewIntent = new Intent(this.getContext(), VideoActivity.class);
+        videoViewIntent.putExtra("VIDEO", (Video)videoListAdapter.getItem(i));
         startActivity(videoViewIntent);
-    }
-
-    /**
-     * Fills the list with videos
-     *
-     * @throws Exception
-     */
-    private void setVideoArrayList() throws Exception {
-        videoArrayList.add(new Video(1, "video 1", InetAddress.getByName("127.0.0.1"), 1234));
-        videoArrayList.add(new Video(2, "video 2", InetAddress.getByName("127.0.0.1"), 1234));
-        videoArrayList.add(new Video(3, "video 3", InetAddress.getByName("127.0.0.1"), 1234));
-        videoArrayList.add(new Video(4, "video 4", InetAddress.getByName("127.0.0.1"), 1234));
-        videoArrayList.add(new Video(5, "video 5", InetAddress.getByName("127.0.0.1"), 1234));
-        videoArrayList.add(new Video(6, "video 6", InetAddress.getByName("127.0.0.1"), 1234));
     }
 }

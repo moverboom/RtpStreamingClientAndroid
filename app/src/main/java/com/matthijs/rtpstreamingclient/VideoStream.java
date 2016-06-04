@@ -49,8 +49,10 @@ public class VideoStream {
 
     private VideoScreen videoScreen;
     private Handler handler;
+    private Video video;
 
-    public VideoStream() {
+    public VideoStream(Video video) {
+        this.video = video;
         buf = new byte[64000];
         handler = new Handler();
         new Thread() {
@@ -70,11 +72,11 @@ public class VideoStream {
     private void initialize() {
         try {
             //SETUP RTSP connection
-            InetAddress ServerIPAddr = InetAddress.getByName("192.168.178.13");
+            InetAddress ServerIPAddr = video.getIp();
             //RTSP port
-            int RTSP_server_port = 5568;
+            int RTSP_server_port = video.getPort();
             //get video filename to request:
-            VideoFileName = "videocapture.mjpeg";
+            VideoFileName = video.getName();
 
             //Establish a TCP connection with the server to exchange RTSP messages
             RTSPsocket = new Socket(ServerIPAddr, RTSP_server_port);

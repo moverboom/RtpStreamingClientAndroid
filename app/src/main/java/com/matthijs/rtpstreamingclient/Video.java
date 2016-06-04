@@ -1,5 +1,6 @@
 package com.matthijs.rtpstreamingclient;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
 /**
@@ -8,7 +9,7 @@ import java.net.InetAddress;
  *
  * Created by Matthijs Overboom on 31-5-16.
  */
-public class Video {
+public class Video implements Serializable {
     /**
      * Video id
      */
